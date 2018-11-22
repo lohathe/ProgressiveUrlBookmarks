@@ -1,0 +1,35 @@
+{
+    "manifest_version": 2,
+    "name": "Progressive Url Bookmarks",
+    "version": "0.1",
+    "description": "Keep only one bookmark for each content site: keep bookmarks updated to the last episode/chapter",
+    
+    "icons": {
+        "48": "icons/feather.svg",
+        "96": "icons/feather.svg"
+    },
+
+    "browser_action": {
+        "default_icon": "icons/feather.svg",
+        "default_title": "PUB: this is the last!",
+        "default_popup": "popup.html"
+    },
+
+
+    "permissions": [
+        "activeTab",
+        "history",
+        "bookmarks",
+        "tabs"
+    ],
+
+    "background": {
+        "scripts": ["background.js"]
+    },
+    
+    "applications": {
+        "gecko": {
+            "id": "lohathe@github.com"
+        }
+    }
+}

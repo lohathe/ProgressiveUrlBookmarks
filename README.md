@@ -1,4 +1,4 @@
-# Progressive Url Bookmark
+# Progressive Url Bookmarks
 
 A simple firefox extension that helps keeping track of progressive url (e.g., series, lessons).
 It does not require any login or any communication with any server: it just manages *your* bookmarks in a smart way.

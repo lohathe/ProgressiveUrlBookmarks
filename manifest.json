@@ -5,12 +5,12 @@
     "description": "Keep only one bookmark for each content site: keep bookmarks updated to the last episode/chapter",
     
     "icons": {
-        "48": "icons/feather.svg",
-        "96": "icons/feather.svg"
+        "48": "icons/feather_big.svg",
+        "96": "icons/feather_big.svg"
     },
 
     "browser_action": {
-        "default_icon": "icons/feather.svg",
+        "default_icon": "icons/feather_big.svg",
         "default_title": "PUB: this is the last!",
         "default_popup": "popup.html"
     },

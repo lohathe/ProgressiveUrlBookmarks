@@ -1,3 +1,5 @@
+function l(s) {console.log(s);}
+
 function getActiveTab() {
     return browser.tabs.query({active: true, currentWindow: true});
 }
@@ -6,23 +8,18 @@ function titleMatchesURL(title, url) {
     return url.search(title) != -1;
 }
 
-function l(s) {console.log(s);}
-
 function isSameSeries(bookmark, current_url) {
     current_url_data = extractTitleAndEpisodeNumber(current_url);
     if (!current_url_data.title || !current_url_data.episode) {
         // should never fall here since `current_url` should be a valid url!
-        l("BAD1");
         return false;
     }
     bookmark_data = extractTitleAndEpisodeNumber(bookmark.url);
     if (!bookmark_data.episode) {
-        l(`bookmark ${bookmark.title} is not an episode`);
         // pay attention to remove only url matching an episode
         return false;
     }
     isSame = bookmark_data.title == current_url_data.title;
-    l(`${bookmark_data.title} == ${current_url_data.title} -> ${isSame}`);
     return isSame;
 }
 
@@ -115,38 +112,26 @@ function markPage(url) {
     const searching = browser.bookmarks.search({query: "animefreak"});
     searching.then((bookmarks) => {
         data = extractTitleAndEpisodeNumber(url);
-        console.log(`found page to mark: ${data.title}`);
         for (i=0; i<bookmarks.length; i++) {
             bookmark = bookmarks[i];
-            console.log(`found bookmark ${bookmark.url}`);
-            //if (titleMatchesURL(bookmark.url, data.title)) {
             if (isSameSeries(bookmark, url)) {
-                console.log("removing bookmark");
                 browser.bookmarks.remove(bookmarks[i].id);
             }
         }
     });
     
-    console.log("DDDD");
     browser.bookmarks.create({
         id: 0,
         parentId: "prova",
         url: url
     });
-    console.log("EEEE");
 }
 function markThisPage() {
     getActiveTab().then((tabs) => {
         const url = tabs[0].url;
-        console.log(`calling markPage(${url})`);
         markPage(url);
     });
 }
 
-//document.addEventListener("DOMContentLoaded", function (event) {
-//    document.getElementById("save").addEventListener(markThisPage);
-//});
-
 document.getElementById("save").addEventListener("click", markThisPage);
 updateCurrent();
-console.log("END SCRIPT");

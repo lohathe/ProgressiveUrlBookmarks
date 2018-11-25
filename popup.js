@@ -106,23 +106,26 @@ function listTracked() {
     });
 }
 
-function updateCurrent() {
-    getActiveTab().then((tabs) => {
-        var url = tabs[0].url;
-        var title = document.getElementById("title");
-        var episode = document.getElementById("episode");
-        var data = extractTitleAndEpisodeNumber(url);
-        if (data.title == null) {
-            title.textContent = "unsupported URL!"; 
-            showOperationPanel(false);
-        } else {
-            title.textContent = data.title;
-            showOperationPanel(true);
-        }
-
+function updateSummary(url) {
+    var title = document.getElementById("title");
+    var episode = document.getElementById("episode");
+    var data = extractTitleAndEpisodeNumber(url);
+    if (data.title == null) {
+        title.textContent = "unsupported URL!";
+        showOperationPanel(false);
+    } else {
+        title.textContent = data.title;
+        showOperationPanel(true);
         if (data.episode) {
             episode.textContent = "ep: " + data.episode;
         }
+    }
+}
+
+function updateCurrent() {
+    getActiveTab().then((tabs) => {
+        var url = tabs[0].url;
+        updateSummary(url);
         listTracked();
     });
 

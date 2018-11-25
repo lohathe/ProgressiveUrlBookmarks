@@ -4,6 +4,26 @@ function getActiveTab() {
     return browser.tabs.query({active: true, currentWindow: true});
 }
 
+function getExtensionBookmarksFolder() {
+    const FOLDER_NAME = "PUB_folder___";
+    return browser.bookmarks.search({title: FOLDER_NAME})
+        .then((bookmarks) => {
+            if (bookmarks.length == 0) {
+                // create the folder if it doesn't already exist
+                // TODO: should we handle this case with an error since the
+                // folder should be create with the configuration page?
+                return browser.bookmarks.create({title: FOLDER_NAME});
+            } else if (bookmarks.length > 1) {
+                throw Error(`Too many bookmarks folder ${FOLDER_NAME}`);
+            } else {
+                return bookmarks[0];
+            }
+        })
+        .catch((error) => {
+            alert(error);
+        });
+}
+
 function titleMatchesURL(title, url) {
     return url.search(title) != -1;
 }
@@ -108,30 +128,46 @@ function updateCurrent() {
 
 }
 
-function markPage(url) {
-    const searching = browser.bookmarks.search({query: "animefreak"});
-    searching.then((bookmarks) => {
-        data = extractTitleAndEpisodeNumber(url);
-        for (i=0; i<bookmarks.length; i++) {
-            bookmark = bookmarks[i];
-            if (isSameSeries(bookmark, url)) {
-                browser.bookmarks.remove(bookmarks[i].id);
+function removeBookmarksWithSameTopic(url, bookmark_folder_id) {
+    browser.bookmarks.getChildren(id=bookmark_folder_id)
+        .then((bookmarks) => {
+            // TODO: remove only bookmarks with a previous episode?
+            data = extractTitleAndEpisodeNumber(url);
+            for (i=0; i<bookmarks.length; i++) {
+                bookmark = bookmarks[i];
+                if (isSameSeries(bookmark, url)) {
+                    browser.bookmarks.remove(bookmark.id);
+                }
             }
-        }
-    });
-    
-    browser.bookmarks.create({
-        id: 0,
-        parentId: "prova",
-        url: url
-    });
+        })
+        .catch((error) => {
+            l(error);
+        });
 }
-function markThisPage() {
-    getActiveTab().then((tabs) => {
-        const url = tabs[0].url;
-        markPage(url);
+
+function markPage(bookmark_folder, page_url, page_title) {
+    // Add `page_url` as a bookmark inside `bookmark_folder`. Label the bookmark
+    // with `page_title` if it is specified, otherwise use the title & episode.
+    // page_title: string
+    // page_url: string
+    // bookmark_folder: bookmarks.BookmarkTreeNode
+    removeBookmarksWithSameTopic(page_url, bookmark_folder.id);
+    bookmark_title = page_title || simplifyURL(page_url);
+    browser.bookmarks.create({
+        parentId: bookmark_folder.id,
+        title: bookmark_title,
+        url: page_url
+    }).catch((error) => {l(error);});
+}
+
+function markCurrentPage() {
+    getExtensionBookmarksFolder().then((bookmark_folder) => {
+        getActiveTab().then((tabs) => {
+            const page_url = tabs[0].url;
+            markPage(bookmark_folder, page_url, null);
+        });
     });
 }
 
-document.getElementById("save").addEventListener("click", markThisPage);
+document.getElementById("save").addEventListener("click", markCurrentPage);
 updateCurrent();

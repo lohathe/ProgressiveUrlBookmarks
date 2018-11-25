@@ -149,25 +149,32 @@ function removeBookmarksWithSameTopic(url, bookmark_folder_id) {
 }
 
 function markPage(bookmark_folder, page_url, page_title) {
-    // Add `page_url` as a bookmark inside `bookmark_folder`. Label the bookmark
-    // with `page_title` if it is specified, otherwise use the title & episode.
+    // Add `page_url` as a bookmark inside `bookmark_folder`.
+    // Remove bookmarks inside `bookmark_folder` related to the same topic as `page_url`.
+    // Label the bookmark with `page_title` if it is specified, otherwise use the title & episode.
     // page_title: string
     // page_url: string
     // bookmark_folder: bookmarks.BookmarkTreeNode
     removeBookmarksWithSameTopic(page_url, bookmark_folder.id);
     bookmark_title = page_title || simplifyURL(page_url);
-    browser.bookmarks.create({
+    return browser.bookmarks.create({
         parentId: bookmark_folder.id,
         title: bookmark_title,
         url: page_url
-    }).catch((error) => {l(error);});
+    });
 }
 
 function markCurrentPage() {
     getExtensionBookmarksFolder().then((bookmark_folder) => {
         getActiveTab().then((tabs) => {
             const page_url = tabs[0].url;
-            markPage(bookmark_folder, page_url, null);
+            markPage(bookmark_folder, page_url, null)
+                .then((new_bookmark) => {
+                    window.close();
+                })
+                .catch((error) => {
+                    l(error);
+                });
         });
     });
 }

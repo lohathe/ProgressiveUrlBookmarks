@@ -43,6 +43,75 @@ function isSameSeries(bookmark, current_url) {
     return isSame;
 }
 
+function extractDataWithRuleFromURL(rule, url) {
+    /* extract relevant data from supplied url: title and episode
+     *
+     * Algorithm to match a rule:
+     * we split both the rule and the input url on "/" and match incrementally
+     * each substring using the "regex" offered to the user.
+     * We do not create a javascript RegExp from the rule because we want
+     * to extract even partial information (aka extract only the title when
+     * the input url does not contain any episode).
+     */
+    function user_regex_to_javascript_regex(user_regex) {
+        var javascript_regex = user_regex
+            .replace(/\*/g, "[^/]*")
+            .replace(/(<title>|<episode>)/g, "([^/]*)");
+        return "^" + javascript_regex + "$";
+    }
+    const partial_rule = rule.split("/");
+    const partial_url = url.split("/");
+    const min_index = Math.min(partial_rule.length, partial_url.length);
+    var title = null;
+    var episode = null;
+    for (var i=0; i<min_index; i++) {
+        const rule_piece = partial_rule[i];
+        const url_piece = partial_url[i];
+        if (rule_piece.length == 0 && url_piece.length != 0) {
+            // avoid to match an empty regexp to a string: it will match
+            // and we don't want such false positives!
+            break;
+        }
+        var reg_exp = RegExp(user_regex_to_javascript_regex(rule_piece));
+        if (url_piece.match(reg_exp)) {
+            const matching_title = rule_piece.search("<title>");
+            const matching_episode = rule_piece.search("<episode>");
+            if (matching_title == -1 && matching_episode == -1) {
+                continue;
+            }
+            // we are matching title or episode or both: we must know what we
+            // are matching to extract the correct piece of information.
+            if (matching_title != -1 && matching_episode == -1) {
+                title = reg_exp.exec(url_piece)[1];
+            } else if (matching_title == -1 && matching_episode != -1) {
+                episode = reg_exp.exec(url_piece)[1];
+            } else {
+                var match1 = reg_exp.exec(url_piece)[1];
+                var match2 = reg_exp.exec(url_piece)[1];
+                if (matching_title < matching_episode) {
+                    title = match1;
+                    episode = match2;
+                } else {
+                    title = match2;
+                    episode = match1;
+                }
+            }
+
+            if (title != null && episode != null) {
+                // found all data: early exit
+                break;
+            }
+        } else {
+            break;
+        }
+    }
+    return {
+        title: title,
+        episode: episode
+    };
+}
+
+
 function extractTitleAndEpisodeNumber(url) {
     var title = null;
     var episode = null;

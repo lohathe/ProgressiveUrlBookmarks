@@ -188,12 +188,14 @@ function listTracked() {
 function updateSummary(url) {
     var title = document.getElementById("title");
     var episode = document.getElementById("episode");
+    var from_rule = document.getElementById("at");
     var data = extractDataFromURL(url);
     if (data.title == null) {
         title.textContent = "unsupported URL!";
         showOperationPanel(false);
     } else {
         title.textContent = data.title;
+        from_rule.textContent = "@" + data.rule_name;
         showOperationPanel(true);
         if (data.episode) {
             episode.textContent = "ep: " + data.episode;

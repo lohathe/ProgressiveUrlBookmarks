@@ -165,17 +165,24 @@ function showOperationPanel(visible) {
 }
 
 function listTracked() {
-    const searching = browser.bookmarks.search({query: "animefreak"});
-    searching.then((bookmarks) => {
-        var suggestions = document.getElementById("suggestions");
-        for (i=0; i<bookmarks.length; i++) {
-            const bookmark = bookmarks[i];
-            const li = document.createElement("li");
-            const text = document.createTextNode(simplifyURL(bookmark.url));
-            li.appendChild(text);
-            suggestions.appendChild(li);
-        }
-    });
+    getExtensionBookmarksFolder()
+        .then((bookmark_folder) => {
+            return browser.bookmarks.getChildren(id=bookmark_folder.id);
+        })
+        .then((bookmarks) => {
+            var suggestions = document.getElementById("suggestions");
+            l("listing all bookmarks:");
+            l(bookmarks);
+            for (var i=0; i<bookmarks.length; i++) {
+                const bookmark = bookmarks[i];
+                l(`creating element: ${bookmark.url}`);
+                const li = document.createElement("li");
+                const text = document.createTextNode(simplifyURL(bookmark.url));
+                li.appendChild(text);
+                suggestions.appendChild(li);
+                l(`created element: ${bookmark.url}`);
+            }
+        });
 }
 
 function updateSummary(url) {
@@ -200,7 +207,6 @@ function updateCurrent() {
         updateSummary(url);
         listTracked();
     });
-
 }
 
 function removeBookmarksWithSameTopic(url, bookmark_folder_id) {

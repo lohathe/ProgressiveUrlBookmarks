@@ -29,12 +29,12 @@ function titleMatchesURL(title, url) {
 }
 
 function isSameSeries(bookmark, current_url) {
-    current_url_data = extractTitleAndEpisodeNumber(current_url);
+    current_url_data = extractDataFromURL(current_url);
     if (!current_url_data.title || !current_url_data.episode) {
         // should never fall here since `current_url` should be a valid url!
         return false;
     }
-    bookmark_data = extractTitleAndEpisodeNumber(bookmark.url);
+    bookmark_data = extractDataFromURL(bookmark.url);
     if (!bookmark_data.episode) {
         // pay attention to remove only url matching an episode
         return false;
@@ -111,34 +111,38 @@ function extractDataWithRuleFromURL(rule, url) {
     };
 }
 
-
-function extractTitleAndEpisodeNumber(url) {
-    var title = null;
-    var episode = null;
-    var pieces = url.split("/");
-    if (url.search("animefreak") != -1) {
-        if (pieces.length >= 5) {
-            title = pieces[4].split("-").join(" ");
+function extractDataFromURL(url) {
+    const RULES = [
+        {
+            rule_name: "animefrek",
+            rule_regex: "*://www.animefreak.tv/watch/<title>/episode/episode-<episode>"
+        },
+        {
+            rule_name: "animeram",
+            rule_regex: "*://www.animeram.com/<title>/<episode>"
         }
-        if (pieces.length >= 7) {
-            episode = pieces[6].split("-")[1];
-        }
-    } else if (url.search("animeram") != -1) {
-        if (pieces.length >= 4) {
-            title = pieces[3].split("-").join(" ");
-        }
-        if (pieces.length >= 5) {
-            episode = pieces[4];
+    ];
+    for (var i=0; i<RULES.length; i++) {
+        current_rule = RULES[i];
+        l(`index: ${i}`);
+        l(`url: ${url}`);
+        l(current_rule);
+        var result = extractDataWithRuleFromURL(current_rule.rule_regex, url);
+        l(`result: ${result}`);
+        if (result.title != null) {
+            result.rule_name = current_rule.rule_name;
+            return result;
         }
     }
     return {
-        title: title,
-        episode: episode
+        title: null,
+        episode: null,
+        rule_name: null
     };
 }
 
 function simplifyURL(url) {
-    const data = extractTitleAndEpisodeNumber(url);
+    const data = extractDataFromURL(url);
     if (data.title == null) {
         return "unsupported URL";
     }
@@ -146,7 +150,6 @@ function simplifyURL(url) {
         return data.title;
     }
     return data.title + " > " + data.episode;
-
 }
 
 function showOperationPanel(visible) {
@@ -178,7 +181,7 @@ function listTracked() {
 function updateSummary(url) {
     var title = document.getElementById("title");
     var episode = document.getElementById("episode");
-    var data = extractTitleAndEpisodeNumber(url);
+    var data = extractDataFromURL(url);
     if (data.title == null) {
         title.textContent = "unsupported URL!";
         showOperationPanel(false);
@@ -204,8 +207,8 @@ function removeBookmarksWithSameTopic(url, bookmark_folder_id) {
     browser.bookmarks.getChildren(id=bookmark_folder_id)
         .then((bookmarks) => {
             // TODO: remove only bookmarks with a previous episode?
-            data = extractTitleAndEpisodeNumber(url);
-            for (i=0; i<bookmarks.length; i++) {
+            data = extractDataFromURL(url);
+            for (var i=0; i<bookmarks.length; i++) {
                 bookmark = bookmarks[i];
                 if (isSameSeries(bookmark, url)) {
                     browser.bookmarks.remove(bookmark.id);

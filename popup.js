@@ -5,16 +5,20 @@ function getActiveTab() {
 }
 
 function getExtensionBookmarksFolder() {
-    const FOLDER_NAME = "PUB_folder___";
-    return browser.bookmarks.search({title: FOLDER_NAME})
-        .then((bookmarks) => {
+    return browser.storage.sync.get("bookmarks_folder")
+        .then((res) => {
+            return Promise.all([browser.bookmarks.search({title: res.bookmarks_folder}), res]);
+        })
+        .then((data) => {
+            bookmarks = data[0];
+            folder_name = data[1].bookmarks_folder;
             if (bookmarks.length == 0) {
                 // create the folder if it doesn't already exist
                 // TODO: should we handle this case with an error since the
                 // folder should be create with the configuration page?
-                return browser.bookmarks.create({title: FOLDER_NAME});
+                return browser.bookmarks.create({title: folder_name});
             } else if (bookmarks.length > 1) {
-                throw Error(`Too many bookmarks folder ${FOLDER_NAME}`);
+                throw Error(`Too many bookmarks folder ${folder_name}`);
             } else {
                 return bookmarks[0];
             }
@@ -119,7 +123,7 @@ function extractDataFromURL(url) {
         },
         {
             rule_name: "animeram",
-            rule_regex: "*://www.animeram.com/<title>/<episode>"
+            rule_regex: "*://ww2.animeram.cc/<title>/<episode>"
         }
     ];
     for (var i=0; i<RULES.length; i++) {

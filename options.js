@@ -8,7 +8,7 @@ function saveOptions(e) {
 function restoreOptions() {
     var storageItem = browser.storage.sync.get("bookmarks_folder");
     storageItem.then((res) => {
-        document.querySelector("#the-folder").innerText = res.bookmarks_folder || "PUB_bookmarks_folder (default)";
+        document.querySelector("#the-folder").innerText = res.bookmarks_folder || "PUB_playground";
         document.querySelector("#PUB_bookmarks_folder").value = res.bookmarks_folder;
     });
 }

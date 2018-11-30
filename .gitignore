@@ -1,3 +1,6 @@
 # file created to test the extension
 run_extension.sh
 run_extension_no_persistent.sh
+
+# vim temporary files
+*.swp

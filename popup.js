@@ -24,9 +24,12 @@ function listTracked() {
             for (var i=0; i<bookmarks.length; i++) {
                 const bookmark = bookmarks[i];
                 const li = document.createElement("li");
-                const text = document.createTextNode(simplifyURL(bookmark.url));
-                li.appendChild(text);
                 suggestions.appendChild(li);
+                simplifyURL(bookmark.url)
+                    .then((simplified_url) => {
+                        const text = document.createTextNode(simplified_url);
+                        li.appendChild(text);
+                    });
             }
         });
 }
@@ -35,18 +38,20 @@ function updateSummary(url) {
     var title = document.getElementById("title");
     var episode = document.getElementById("episode");
     var from_rule = document.getElementById("at");
-    var data = extractDataFromURL(url);
-    if (data.title == null) {
-        title.textContent = "unsupported URL!";
-        showOperationPanel(false);
-    } else {
-        title.textContent = data.title;
-        from_rule.textContent = "@" + data.rule_name;
-        showOperationPanel(true);
-        if (data.episode) {
-            episode.textContent = "ep: " + data.episode;
-        }
-    }
+    extractDataFromURL(url)
+        .then((data) => {
+            if (data.title == null) {
+                title.textContent = "unsupported URL!";
+                showOperationPanel(false);
+            } else {
+                title.textContent = data.title;
+                from_rule.textContent = "@" + data.rule_name;
+                showOperationPanel(true);
+                if (data.episode) {
+                    episode.textContent = "ep: " + data.episode;
+                }
+            }
+        });
 }
 
 function updateCurrent() {
@@ -58,18 +63,23 @@ function updateCurrent() {
 }
 
 function markCurrentPage() {
-    getExtensionBookmarksFolder().then((bookmark_folder) => {
-        getActiveTab().then((tabs) => {
+    return Promise.all(
+            [
+                getExtensionBookmarksFolder(),
+                getActiveTab()
+            ])
+        .then((res) => {
+            const bookmark_folder = res[0];
+            const tabs = res[1];
             const page_url = tabs[0].url;
-            markPage(bookmark_folder, page_url, null)
-                .then((new_bookmark) => {
-                    window.close();
-                })
-                .catch((error) => {
-                    l(error);
-                });
+            return markPage(bookmark_folder, page_url)
+        })
+        .then((new_bookmark) => {
+            window.close();
+        })
+        .catch((error) => {
+            l(error);
         });
-    });
 }
 
 document.getElementById("save").addEventListener("click", markCurrentPage);

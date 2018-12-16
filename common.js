@@ -19,9 +19,21 @@ function getExtensionBookmarksFolder() {
                 return bookmarks[0];
             }
         })
-        .catch((error) => {
-            alert(error);
-        });
+}
+
+function getExtensionRules() {
+    const RULES = [
+        {
+            rule_name: "animefrek",
+            rule_regex: "*://www.animefreak.tv/watch/<title>/episode/episode-<episode>"
+        },
+        {
+            rule_name: "animeram",
+            rule_regex: "*://ww2.animeram.cc/<title>/<episode>"
+        }
+    ];
+    return Promise.resolve(RULES);
+    // return browser.storage.sync.get("rules");
 }
 
 function extractDataWithRuleFromURL(rule, url) {
@@ -92,19 +104,9 @@ function extractDataWithRuleFromURL(rule, url) {
     };
 }
 
-function extractDataFromURL(url) {
-    const RULES = [
-        {
-            rule_name: "animefrek",
-            rule_regex: "*://www.animefreak.tv/watch/<title>/episode/episode-<episode>"
-        },
-        {
-            rule_name: "animeram",
-            rule_regex: "*://ww2.animeram.cc/<title>/<episode>"
-        }
-    ];
-    for (var i=0; i<RULES.length; i++) {
-        current_rule = RULES[i];
+function extractDataWithRulesFromURL(rules, url) {
+    for (var i=0; i<rules.length; i++) {
+        const current_rule = rules[i];
         var result = extractDataWithRuleFromURL(current_rule.rule_regex, url);
         if (result.title != null) {
             result.rule_name = current_rule.rule_name;
@@ -118,61 +120,93 @@ function extractDataFromURL(url) {
     };
 }
 
-function simplifyURL(url) {
-    const data = extractDataFromURL(url);
+function extractDataFromURL(url) {
+    return getExtensionRules()
+        .then((rules) => {
+            return extractDataWithRulesFromURL(rules, url);
+        });
+}
+
+function formatData(data) {
     if (data.title == null) {
         return "unsupported URL";
     }
     if (data.episode == null) {
-        return data.title;
+        return `[${data.rule_name}] ${data.title}`;
     }
-    return data.title + " > " + data.episode;
+    return `[${data.rule_name}] ${data.title} > ${data.episode}`;
 }
 
-function removeBookmarksWithSameTopic(url, bookmark_folder_id) {
-    browser.bookmarks.getChildren(id=bookmark_folder_id)
-        .then((bookmarks) => {
-            // TODO: remove only bookmarks with a previous episode?
-            data = extractDataFromURL(url);
-            for (var i=0; i<bookmarks.length; i++) {
-                bookmark = bookmarks[i];
-                if (isSameSeries(bookmark, url)) {
-                    browser.bookmarks.remove(bookmark.id);
-                }
-            }
-        })
-        .catch((error) => {
-            l(error);
+function simplifyURL(url) {
+    return extractDataFromURL(url)
+        .then((data) => {
+            return formatData(data);
         });
 }
 
-function isSameSeries(bookmark, current_url) {
-    current_url_data = extractDataFromURL(current_url);
-    if (!current_url_data.title || !current_url_data.episode) {
-        // should never fall here since `current_url` should be a valid url!
-        return false;
-    }
-    bookmark_data = extractDataFromURL(bookmark.url);
-    if (!bookmark_data.episode) {
-        // pay attention to remove only url matching an episode
-        return false;
-    }
-    isSame = bookmark_data.title == current_url_data.title;
-    return isSame;
+function removeBookmarksWithSameTopic(url, bookmark_folder_id) {
+    return browser.bookmarks.getChildren(id=bookmark_folder_id)
+        .then((bookmarks) => {
+            return Promise.all(
+                    [
+                        bookmarks,
+                        extractDataFromURL(url)
+                    ]);
+        })
+        .then((res) => {
+            var bookmarks = res[0];
+            var data = res[1];
+            for (var i=0; i<bookmarks.length; i++) {
+                var bookmark = bookmarks[i];
+                isSameSeries(bookmark.url, url, bookmark.id)
+                    .then((res2) => {
+                        var is_same = res2[0];
+                        var bookmark_id = res2[1];
+                        if (is_same) {
+                            browser.bookmarks.remove(bookmark_id);
+                        }
+                    });
+            }
+        })
 }
 
-function markPage(bookmark_folder, page_url, page_title) {
+function isSameSeries(bookmark_url, current_url, bookmark_id) {
+    return Promise.all(
+            [
+                extractDataFromURL(bookmark_url),
+                extractDataFromURL(current_url)
+            ])
+        .then((res) => {
+            var bookmark_data = res[0];
+            var current_url_data = res[1];
+            if (!current_url_data.title || !current_url_data.episode) {
+                // should never fall here since `current_url` should be a valid url!
+                return [false, bookmark_id];
+            }
+            if (!bookmark_data.episode) {
+                // pay attention to remove only url matching an episode
+                return [false, bookmark_id];
+            }
+            var isSame = bookmark_data.title == current_url_data.title;
+            return [isSame, bookmark_id];
+        });
+}
+
+function markPage(bookmark_folder, page_url) {
     // Add `page_url` as a bookmark inside `bookmark_folder`.
     // Remove bookmarks inside `bookmark_folder` related to the same topic as `page_url`.
-    // Label the bookmark with `page_title` if it is specified, otherwise use the title & episode.
-    // page_title: string
+    // Label the bookmark with rule name, title and episode.
     // page_url: string
     // bookmark_folder: bookmarks.BookmarkTreeNode
-    removeBookmarksWithSameTopic(page_url, bookmark_folder.id);
-    bookmark_title = page_title || simplifyURL(page_url);
-    return browser.bookmarks.create({
-        parentId: bookmark_folder.id,
-        title: bookmark_title,
-        url: page_url
-    });
+    return removeBookmarksWithSameTopic(page_url, bookmark_folder.id)
+        .then((ignore) => {
+            return simplifyURL(page_url);
+        })
+        .then((bookmark_title) => {
+            return browser.bookmarks.create({
+                parentId: bookmark_folder.id,
+                title: bookmark_title,
+                url: page_url
+            });
+        });
 }

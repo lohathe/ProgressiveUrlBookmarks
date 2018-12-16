@@ -109,8 +109,11 @@ function extractDataWithRulesFromURL(rules, url) {
         const current_rule = rules[i];
         var result = extractDataWithRuleFromURL(current_rule.rule_regex, url);
         if (result.title != null) {
-            result.rule_name = current_rule.rule_name;
-            return result;
+            return {
+                title: result.title.replace(/-/g, " "),
+                episode: result.episode,
+                rule_name: current_rule.rule_name
+            };
         }
     }
     return {

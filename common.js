@@ -36,6 +36,13 @@ function getExtensionRules() {
     // return browser.storage.sync.get("rules");
 }
 
+function getAllBookmarks() {
+    return getExtensionBookmarksFolder()
+        .then((bookmarks_folder) => {
+            return browser.bookmarks.getChildren(id=bookmarks_folder.id);
+        })
+}
+
 function extractDataWithRuleFromURL(rule, url) {
     /* extract relevant data from supplied url: title and episode
      *
@@ -212,4 +219,47 @@ function markPage(bookmark_folder, page_url) {
                 url: page_url
             });
         });
+}
+
+function extractDataFromAllBookmarks() {
+    return getAllBookmarks()
+        .then((bookmarks) => {
+            var extracted_data_promises = [];
+            for (let bookmark of bookmarks) {
+                extracted_data_promises.push(extractDataFromURL(bookmark.url));
+            }
+            return Promise.all(extracted_data_promises);
+        });
+}
+
+function getUrlTrackedData(url) {
+    return Promise.all(
+            [
+                extractDataFromAllBookmarks(),
+                extractDataFromURL(url)
+            ])
+        .then((res) => {
+            const all_bookmarks_data = res[0];
+            const current_url_data = res[1];
+            var result = {
+                current: current_url_data,
+                previous: null,
+            }
+            if (current_url_data.title == null) {
+                return result;
+            }
+            const related_bookmarks_data = all_bookmarks_data
+                .filter(function(x) {
+                        return (x.title == current_url_data.title && parseInt(x.episode, 10) != NaN);
+                })
+                .sort(function(a, b) {
+                    const v1 = parseInt(a.episode, 10);
+                    const v2 = parseInt(b.episode, 10);
+                    return v1-v2;
+                });
+            if (related_bookmarks_data.length > 0) {
+                result.previous = related_bookmarks_data[related_bookmarks_data.length -1];
+            }
+            return result;
+        })
 }

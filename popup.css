@@ -1,5 +1,5 @@
 html, body {
-    width: 200px;
+    width: 400px;
     color: #3d3d3d;
     margin: 0;
     padding: 0;
@@ -7,12 +7,17 @@ html, body {
 }
 
 #summary {
+    font-family: sans-serif;
+    font-variant: small-caps;
+    font-size: .8rem;
     font-weight: bold;
-    width: 100%;
-    background-color: #EFEFEF;
-    border-bottom: 3px solid #3D3D3D;
+    padding-left: 1em;
+    padding-right: 2em;
     padding-top: .125em;
     padding-bottom: .125em;
+}
+#title {
+    font-size: 1.2rem;
 }
 
 #operations {

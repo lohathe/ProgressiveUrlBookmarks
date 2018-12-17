@@ -58,6 +58,7 @@ function updateSummary(url) {
                 // tracked content for the same url.
                 if (previous_data == null) {
                     summary.classList.add("untracked");
+                    summary.classList.add("unmarked");
                 }
                 else {
                     current_episode = parseInt(current_data.episode);
@@ -67,6 +68,12 @@ function updateSummary(url) {
                     }
                     else {
                         summary.classList.add("tracked-behind");
+                    }
+                    if (previous_episode == current_episode) {
+                        summary.classList.add("marked");
+                    }
+                    else {
+                        summary.classList.add("unmarked");
                     }
                 }
                 showOperationPanel(true);

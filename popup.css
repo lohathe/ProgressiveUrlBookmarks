@@ -42,12 +42,30 @@ html, body {
     display: none;
 }
 
-.tracked {
-    background-color: green;
-    border: 3px solid #5E5;
+
+.unknown {
+    background-color: #EFEFEF;
+    color: #3D3D3D;
+    border-bottom: .25em solid #3D3D3D;
+}
+
+.tracked-ahead {
+    background-color: #AED581;
+    color: #3D3D3D;
+    margin-left: -10em;
+    border-left: 10.5em solid #43A047;
+}
+
+.tracked-behind {
+    background-color: #C70039;
+    color: #FFE6E6;
+    margin-left: -10em;
+    border-left: 10.5em solid #900C3F;
 }
 
 .untracked {
-    background-color: red;
-    border: 3px solid #E55;
+    background-color: #FFF176;
+    color: #3D3D3D;
+    margin-left: -10em;
+    border-left: 10.5em solid #FDD835;
 }

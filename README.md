@@ -26,8 +26,8 @@ The main goal is to be able to bookmark a progressive url and automatically dele
 * show if the current url is already bookmarked or not: use a feather icon as a background image
 * show if the current url refers to content that is already tracked:
    * use a green background color if the content is already tracked and the current url has a bigger progression number
-   * use a yellow background color if the content is already tracked and the current url has a smaller (or equal) progression number
-   * use a red background color if the content is not already tracked
+   * use a red background color if the content is already tracked and the current url has a smaller (or equal) progression number
+   * use a yellow background color if the content is not already tracked
 * button to add the current url to the tracker (which will automatically removes all previous bookmark of the same content, if any)
 * button to un-track the current url and the relative content
 * small list of the last tracked content. All entries are in fact links and are clickable (as normal bookmarks are)

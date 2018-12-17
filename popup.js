@@ -35,21 +35,41 @@ function listTracked() {
 }
 
 function updateSummary(url) {
+    var summary = document.getElementById("summary");
     var title = document.getElementById("title");
     var episode = document.getElementById("episode");
     var from_rule = document.getElementById("at");
-    extractDataFromURL(url)
+    getUrlTrackedData(url)
         .then((data) => {
-            if (data.title == null) {
+            const current_data = data.current;
+            const previous_data = data.previous;
+            if (current_data.title == null) {
+                summary.classList.add("unknown");
                 title.textContent = "unsupported URL!";
                 showOperationPanel(false);
-            } else {
-                title.textContent = data.title;
-                from_rule.textContent = "@" + data.rule_name;
-                showOperationPanel(true);
-                if (data.episode) {
-                    episode.textContent = "ep: " + data.episode;
+            }
+            else {
+                title.textContent = current_data.title;
+                from_rule.textContent = "@" + current_data.rule_name;
+                if (current_data.episode) {
+                    episode.textContent = "ep: " + current_data.episode;
                 }
+                // color background depending on the previously
+                // tracked content for the same url.
+                if (previous_data == null) {
+                    summary.classList.add("untracked");
+                }
+                else {
+                    current_episode = parseInt(current_data.episode);
+                    previous_episode = parseInt(previous_data.episode);
+                    if (previous_episode < current_episode) {
+                        summary.classList.add("tracked-ahead");
+                    }
+                    else {
+                        summary.classList.add("tracked-behind");
+                    }
+                }
+                showOperationPanel(true);
             }
         });
 }

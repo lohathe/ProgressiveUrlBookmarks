@@ -1,20 +1,41 @@
-const DEFAULT_BOOKMARKS_FOLDER = "PUB_playground";
-
+// BOOKMARKS FOLDER
 function saveBookmarksFolder(e) {
-    input_value = document.querySelector("#PUB_bookmarks_folder").value | DEFAULT_BOOKMARKS_FOLDER;
-    browser.storage.sync.set({
-        bookmarks_folder: input_value
-    });
     e.preventDefault();
-}
-    e.preventDefault();
+    input_value = document.querySelector("#PUB_bookmarks_folder").value;
+    if (!input_value) {
+        throw new Error("invalid input for PUB_bookmarks_folder");
+    }
+    return updateBookmarksFolder(input_value);
 }
 
+function updateBookmarksFolder(new_folder) {
+    return browser.storage.sync.set({
+        bookmarks_folder: new_folder,
+    })
+    .then((ignore) => {
+        return restoreOptions();
+    })
+    .then((ignore) => {
+        return clearAllInputs();
+    })
+}
+
+function restoreBookmarksFolder(folder_name) {
+    document.querySelector("#the-folder").innerText = folder_name;
+}
+
+function clearBookmarksFolderInput() {
+    document.querySelector("#PUB_bookmarks_folder").value = null;
+}
+
+// WHOLE PAGE MANAGEMENT
 function restoreOptions() {
-    var storageItem = browser.storage.sync.get("bookmarks_folder");
-    storageItem.then((res) => {
-        document.querySelector("#the-folder").innerText = res.bookmarks_folder || "PUB_playground";
-    });
+    return getBookmarksFolderName()
+        .then(restoreBookmarksFolder);
+}
+
+function clearAllInputs() {
+    return clearBookmarksFolderInput();
 }
 
 document.addEventListener("DOMContentLoaded", restoreOptions);

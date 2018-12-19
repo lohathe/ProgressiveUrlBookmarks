@@ -1,17 +1,39 @@
 function l(s) {console.log(s);}
 
-function getExtensionBookmarksFolder() {
+const DEFAULT_BOOKMARKS_FOLDER = "PUB_playground";
+
+/*
+ * Get the name of the folder specified by the user, or the default name
+ */
+function getBookmarksFolderName() {
     return browser.storage.sync.get("bookmarks_folder")
         .then((res) => {
-            return Promise.all([browser.bookmarks.search({title: res.bookmarks_folder}), res]);
+            let folder_name = DEFAULT_BOOKMARKS_FOLDER;
+            if (res && res.bookmarks_folder) {
+                folder_name = res.bookmarks_folder;
+            }
+            return folder_name;
+        });
+}
+
+/*
+ * Get the browser.bookmarks.BookmarkTreeNode pointing to the extension folder.
+ * It creates the folder if it doesn't already exist.
+ * It there are 2 or more bookmarks with the same name, then raise an error.
+ */
+function getExtensionBookmarksFolder() {
+    return getBookmarksFolderName()
+        .then((folder_name) => {
+            return Promise.all(
+                    [
+                        browser.bookmarks.search({title: folder_name}),
+                        folder_name
+                    ]);
         })
         .then((data) => {
             bookmarks = data[0];
             folder_name = data[1].bookmarks_folder;
             if (bookmarks.length == 0) {
-                // create the folder if it doesn't already exist
-                // TODO: should we handle this case with an error since the
-                // folder should be create with the configuration page?
                 return browser.bookmarks.create({title: folder_name});
             } else if (bookmarks.length > 1) {
                 throw Error(`Too many bookmarks folder ${folder_name}`);

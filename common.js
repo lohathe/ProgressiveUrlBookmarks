@@ -43,19 +43,29 @@ function getExtensionBookmarksFolder() {
         })
 }
 
+function getRules() {
+    return browser.storage.sync.get("rules")
+        .then((res) => {
+            let stored_rules = [];
+            if (res && Array.isArray(res.rules)) {
+                stored_rules = res.rules
+            }
+            return stored_rules;
+        })
+}
+
+function appendRule(new_rule) {
+    return getRules()
+        .then((all_rules) => {
+            all_rules.push(new_rule);
+            return browser.storage.sync.set({
+                rules: all_rules,
+            });
+        })
+}
+
 function getExtensionRules() {
-    const RULES = [
-        {
-            rule_name: "animefrek",
-            rule_regex: "*://www.animefreak.tv/watch/<title>/episode/episode-<episode>"
-        },
-        {
-            rule_name: "animeram",
-            rule_regex: "*://ww2.animeram.cc/<title>/<episode>"
-        }
-    ];
-    return Promise.resolve(RULES);
-    // return browser.storage.sync.get("rules");
+    return getRules();
 }
 
 function getAllBookmarks() {

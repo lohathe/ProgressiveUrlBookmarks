@@ -146,12 +146,12 @@ function extractDataWithRuleFromURL(rule, url) {
 function extractDataWithRulesFromURL(rules, url) {
     for (var i=0; i<rules.length; i++) {
         const current_rule = rules[i];
-        var result = extractDataWithRuleFromURL(current_rule.rule_regex, url);
+        var result = extractDataWithRuleFromURL(current_rule.rule, url);
         if (result.title != null) {
             return {
                 title: result.title.replace(/-/g, " "),
                 episode: result.episode,
-                rule_name: current_rule.rule_name
+                rule_name: current_rule.name
             };
         }
     }

@@ -65,6 +65,25 @@ function appendRule(new_rule) {
         })
 }
 
+function removeRule(rule_id) {
+    return getRules()
+        .then((old_rules) => {
+            let all_rules = [];
+            for (let i=0; i<old_rules.length; i++) {
+                let rule = old_rules[i];
+                if (rule.id == rule_id) {
+                    continue;
+                }
+                let updated_rule = rule;
+                updated_rule.id = all_rules.length + 1;
+                all_rules.push(updated_rule);
+            }
+            return browser.storage.sync.set({
+                rules: all_rules,
+            });
+        });
+}
+
 function getExtensionRules() {
     return getRules();
 }

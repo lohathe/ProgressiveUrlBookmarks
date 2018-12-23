@@ -33,6 +33,21 @@ body {
     color: #606060;
 }
 
+.remove {
+    color: blue;
+    float: right;
+    font-weight: normal;
+}
+
+.current-setting dt {
+    background-color: #ffcc00;
+    font-weight: bold;
+    padding: .125em;
+}
+.current-setting dd {
+    padding-bottom: .745em;
+}
+
 .current-setting p strong {
     color: #404040;
 }

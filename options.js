@@ -46,13 +46,29 @@ function restoreRules() {
             const list = document.querySelector("#current-rules");
             list.innerHTML = "";
             for (let i=0; i<rules.length; i++) {
-                var li = document.createElement("li");
-                const rule = rules[i];
-                const text = document.createTextNode(`[${rule.name}] ${rule.rule}`);
-                li.appendChild(text);
-                list.appendChild(li);
+                let rule = rules[i];
+                let name = document.createTextNode(`[${rule.name}]`);
+                let desc = document.createTextNode(`${rule.rule}`);
+                let dt = document.createElement("dt");
+                let dd = document.createElement("dd");
+                let remove = document.createElement("span");
+                remove.setAttribute("id", rule.id);
+                remove.classList.add("remove");
+                remove.appendChild(document.createTextNode("(remove)"));
+                remove.addEventListener("click", removeClickedRule);
+                dt.appendChild(name);
+                dt.appendChild(remove);
+                dd.appendChild(desc);
+                list.appendChild(dt);
+                list.appendChild(dd);
             }
         });
+}
+
+function removeClickedRule() {
+    let id = this.id;
+    removeRule(id)
+        .then(restoreOptions);
 }
 
 function clearRulesInput() {

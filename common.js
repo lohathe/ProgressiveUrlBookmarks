@@ -57,6 +57,7 @@ function getRules() {
 function appendRule(new_rule) {
     return getRules()
         .then((all_rules) => {
+            new_rule.id = all_rules.length + 1;
             all_rules.push(new_rule);
             return browser.storage.sync.set({
                 rules: all_rules,

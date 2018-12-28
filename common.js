@@ -284,6 +284,32 @@ function extractDataFromAllBookmarks() {
         });
 }
 
+function getPreviousRelatedData(target, list) {
+    if (target.title == null) {
+        return null;
+    }
+    let related_data = list.filter(function (x) {
+        return x.title == target.title;
+    });
+    related_data.sort(function(a, b) {
+        let v1 = parseInt(a.episode, 10);
+        let v2 = parseInt(b.episode, 10);
+        if (isNaN(v1) && isNaN(v2)) {
+            return 0;
+        } else if (isNaN(v1)) {
+            return -1;
+        } else if (isNaN(v2)) {
+            return 1;
+        } else {
+            return v1 - v2;
+        }
+    });
+    if (related_data.length > 0) {
+        return related_data[related_data.length-1];
+    }
+    return null;
+}
+
 function getUrlTrackedData(url) {
     return Promise.all(
             [
@@ -293,25 +319,10 @@ function getUrlTrackedData(url) {
         .then((res) => {
             const all_bookmarks_data = res[0];
             const current_url_data = res[1];
-            var result = {
+            const previous_data = getPreviousRelatedData(current_url_data, all_bookmarks_data);
+            return {
                 current: current_url_data,
-                previous: null,
-            }
-            if (current_url_data.title == null) {
-                return result;
-            }
-            const related_bookmarks_data = all_bookmarks_data
-                .filter(function(x) {
-                        return (x.title == current_url_data.title && parseInt(x.episode, 10) != NaN);
-                })
-                .sort(function(a, b) {
-                    const v1 = parseInt(a.episode, 10);
-                    const v2 = parseInt(b.episode, 10);
-                    return v1-v2;
-                });
-            if (related_bookmarks_data.length > 0) {
-                result.previous = related_bookmarks_data[related_bookmarks_data.length -1];
-            }
-            return result;
+                previous: previous_data
+            };
         })
 }

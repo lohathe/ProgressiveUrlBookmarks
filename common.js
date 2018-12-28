@@ -171,14 +171,18 @@ function extractDataWithRulesFromURL(rules, url) {
             return {
                 title: result.title.replace(/-/g, " "),
                 episode: result.episode,
-                rule_name: current_rule.name
+                rule_name: current_rule.name,
+                rule_id: current_rule.id,
+                original_url: url
             };
         }
     }
     return {
         title: null,
         episode: null,
-        rule_name: null
+        rule_name: null,
+        rule_id: null,
+        original_url: url
     };
 }
 

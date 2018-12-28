@@ -2,6 +2,21 @@ function l(s) {console.log(s);}
 
 const DEFAULT_BOOKMARKS_FOLDER = "PUB_playground";
 
+function getFolderNode(folder_name, create_if_missing=false) {
+    return browser.bookmarks.search({title: folder_name})
+        .then((bookmarks) => {
+            if (bookmarks.length == 0 && create_if_missing) {
+                return browser.bookmarks.create({title: folder_name});
+            } else if (bookmarks.length == 0 && !create_if_missing) {
+                throw Error(`Folder "${folder_name}" is missing`)
+            } else if (bookmarks.length > 1) {
+                throw Error(`Too many bookmarks named "${folder_name}"`);
+            } else {
+                return bookmarks[0];
+            }
+        })
+}
+
 /*
  * Get the name of the folder specified by the user, or the default name
  */
@@ -24,22 +39,7 @@ function getBookmarksFolderName() {
 function getExtensionBookmarksFolder() {
     return getBookmarksFolderName()
         .then((folder_name) => {
-            return Promise.all(
-                    [
-                        browser.bookmarks.search({title: folder_name}),
-                        folder_name
-                    ]);
-        })
-        .then((data) => {
-            bookmarks = data[0];
-            folder_name = data[1].bookmarks_folder;
-            if (bookmarks.length == 0) {
-                return browser.bookmarks.create({title: folder_name});
-            } else if (bookmarks.length > 1) {
-                throw Error(`Too many bookmarks folder ${folder_name}`);
-            } else {
-                return bookmarks[0];
-            }
+            return getFolderNode(folder_name, create_if_missing=true);
         })
 }
 

@@ -330,3 +330,55 @@ function getUrlTrackedData(url) {
             };
         })
 }
+
+function importUrlsFromFolder(folder_name) {
+    return getFolderNode(folder_name, create_if_missing=false)
+        .then((node) => {
+            return browser.bookmarks.getChildren(node.id);
+        })
+        .then((bookmarks) => {
+            let bookmarks_data = [];
+            for (let i=0; i<bookmarks.length; i++) {
+                bookmarks_data.push(extractDataFromURL(bookmarks[i].url));
+            }
+            return Promise.all([
+                Promise.all(bookmarks_data),
+                extractDataFromAllBookmarks()
+            ]);
+        })
+        .then((res) => {
+            let importing_bookmarks_data = res[0];
+            let currrent_bookmarks_data = res[1];
+            let unique_content_from_import = new Set();
+            for (let i=0; i<importing_bookmarks_data.length; i++) {
+                if (importing_bookmarks_data[i].title == null) {
+                    continue;
+                }
+                unique_content_from_import.add(importing_bookmarks_data[i].title);
+            }
+            let bookmarks_to_add_or_update = [];
+            let all_bookmarks_data = importing_bookmarks_data.concat(currrent_bookmarks_data);
+            for (let title of unique_content_from_import) {
+                let fake_data = {title: title, episode: null};
+                let last_data = getPreviousRelatedData(fake_data, all_bookmarks_data);
+                if (!last_data) {
+                    continue;
+                }
+                bookmarks_to_add_or_update.push(last_data);
+            }
+            return bookmarks_to_add_or_update;
+        })
+        .then((bookmarks_to_add_or_update) => {
+            return Promise.all([
+                getExtensionBookmarksFolder(),
+                bookmarks_to_add_or_update
+            ]);
+        })
+        .then((res) => {
+            let bookmarks_folder = res[0];
+            let bookmarks_to_add_or_update = res[1];
+            bookmarks_to_add_or_update.forEach(function (x) {
+                markPage(bookmarks_folder, x.original_url);
+            });
+        });
+}

@@ -22,6 +22,17 @@ function restoreBookmarksFolder(folder_name) {
 
 function clearBookmarksFolderInput() {
     document.querySelector("#PUB_bookmarks_folder").value = null;
+    document.querySelector("#PUB_import_folder").value = null;
+}
+
+function importFolder(e) {
+    e.preventDefault();
+    input_value = document.querySelector("#PUB_import_folder").value;
+    if (!input_value) {
+        throw new Error("invalid input for PUB_import_folder");
+    }
+    return importUrlsFromFolder(input_value)
+        .then(clearBookmarksFolderInput);
 }
 
 
@@ -91,4 +102,5 @@ function clearAllInputs() {
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.querySelector("#PUB_bookmarks_folder_selector").addEventListener("submit", saveBookmarksFolder);
+document.querySelector("#PUB_import_folder_selector").addEventListener("submit", importFolder);
 document.querySelector("#PUB_rules_selector").addEventListener("submit", addRule);

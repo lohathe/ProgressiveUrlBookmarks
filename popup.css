@@ -16,26 +16,21 @@ html, body {
     padding-top: .125em;
     padding-bottom: .125em;
 }
+
 #title {
     font-size: 1.2rem;
 }
 
-#operations {
-    padding-top: .125em;
-    padding-bottom: .125em;
+#operations .button {
+    margin: 0;
+    border: 0;
+    padding: 1em;
+    width: 200px;
+    background-color: #dfdfdf;
 }
-
-.button {
-    background-color: #7F7FF7;
-    color: #efefef;
-    font-weight: bold;
-    font-family: sans-serif;
-    padding: .3em;
-    text-align: center;
-}
-
-.button:hover {
-    background-color: #8F8FF8;
+#operations .button:hover {
+    color: #ffffff;
+    background-color: #0996f8;
 }
 
 .hidden {

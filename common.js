@@ -336,6 +336,29 @@ function getUrlTrackedData(url) {
         })
 }
 
+/*
+ * We can have multiple bookmarks for the same url.
+ * This function fetches the correct bookmark for the specified url stored
+ * in the dedicated PUB bookmark folder.
+ */
+function getTrackedBookmarkForURL(url) {
+    return Promise.all(
+        [
+            browser.bookmarks.search({url: url}),
+            getExtensionBookmarksFolder()
+        ])
+        .then((res) => {
+            const bookmarks_for_url = res[0];
+            const bookmark_folder = res[1];
+            for (let bookmark of bookmarks_for_url) {
+                if (bookmark.parentId == bookmark_folder.id) {
+                    return bookmark;
+                }
+            }
+            throw Error(`current page '${url}' is not tracked by PUB!`);
+        });
+}
+
 function importUrlsFromFolder(folder_name) {
     return getFolderNode(folder_name, create_if_missing=false)
         .then((node) => {

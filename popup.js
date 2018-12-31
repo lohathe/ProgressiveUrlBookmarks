@@ -109,5 +109,24 @@ function markCurrentPage() {
         });
 }
 
+function unmarkCurrentPage() {
+    return getActiveTab()
+        .then((tabs) => {
+            const page_url = tabs[0].url;
+            return getTrackedBookmarkForURL(page_url);
+        })
+        .then((bookmark_to_remove) => {
+            // if we didn't find the bookmark, then we raised an error
+            return browser.bookmarks.remove(bookmark_to_remove.id);
+        })
+        .then((ignore) => {
+            window.close();
+        })
+        .catch((error) => {
+            l(error);
+        });
+}
+
 document.getElementById("save").addEventListener("click", markCurrentPage);
+document.getElementById("delete").addEventListener("click", unmarkCurrentPage);
 updateCurrent();

@@ -225,14 +225,18 @@ function removeBookmarksWithSameTopic(url, bookmark_folder_id) {
                     ]);
         })
         .then((res) => {
-            var bookmarks = res[0];
-            var data = res[1];
-            for (var i=0; i<bookmarks.length; i++) {
-                var bookmark = bookmarks[i];
-                isSameSeries(bookmark.url, url, bookmark.id)
+            let bookmarks = res[0];
+            let data = res[1];
+            for (let i=0; i<bookmarks.length; i++) {
+                let bookmark = bookmarks[i];
+                Promise.all(
+                    [
+                        isSameContent(bookmark.url, url),
+                        bookmark.id
+                    ])
                     .then((res2) => {
-                        var is_same = res2[0];
-                        var bookmark_id = res2[1];
+                        let is_same = res2[0];
+                        let bookmark_id = res2[1];
                         if (is_same) {
                             browser.bookmarks.remove(bookmark_id);
                         }
@@ -241,25 +245,21 @@ function removeBookmarksWithSameTopic(url, bookmark_folder_id) {
         })
 }
 
-function isSameSeries(bookmark_url, current_url, bookmark_id) {
+function isSameContent(url_1, url_2) {
     return Promise.all(
             [
-                extractDataFromURL(bookmark_url),
-                extractDataFromURL(current_url)
+                extractDataFromURL(url_1),
+                extractDataFromURL(url_2)
             ])
         .then((res) => {
-            var bookmark_data = res[0];
-            var current_url_data = res[1];
-            if (!current_url_data.title || !current_url_data.episode) {
-                // should never fall here since `current_url` should be a valid url!
-                return [false, bookmark_id];
+            var url_1_data = res[0];
+            var url_2_data = res[1];
+            if (!url_1_data.rule_id || !url_2_data.rule_id) {
+                // make sure both urls matched a rule
+                return false;
             }
-            if (!bookmark_data.episode) {
-                // pay attention to remove only url matching an episode
-                return [false, bookmark_id];
-            }
-            var isSame = bookmark_data.title == current_url_data.title;
-            return [isSame, bookmark_id];
+            var isSame = url_1_data.title == url_2_data.title;
+            return isSame;
         });
 }
 

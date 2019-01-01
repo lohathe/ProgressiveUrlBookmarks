@@ -15,21 +15,17 @@ function showOperationPanel(visible) {
 }
 
 function listTracked() {
-    getExtensionBookmarksFolder()
-        .then((bookmark_folder) => {
-            return browser.bookmarks.getChildren(id=bookmark_folder.id);
-        })
+    getAllBookmarks("date-descending")
         .then((bookmarks) => {
-            var suggestions = document.getElementById("suggestions");
-            for (var i=0; i<bookmarks.length; i++) {
-                const bookmark = bookmarks[i];
-                const li = document.createElement("li");
+            return Promise.all(bookmarks.map((bookmark) => simplifyURL(bookmark.url)));
+        })
+        .then((simplified_urls) => {
+            let suggestions = document.getElementById("suggestions");
+            for (let simplified_url of simplified_urls) {
+                let li = document.createElement("li");
+                let text = document.createTextNode(simplified_url);
+                li.appendChild(text);
                 suggestions.appendChild(li);
-                simplifyURL(bookmark.url)
-                    .then((simplified_url) => {
-                        const text = document.createTextNode(simplified_url);
-                        li.appendChild(text);
-                    });
             }
         });
 }

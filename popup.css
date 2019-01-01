@@ -21,14 +21,20 @@ html, body {
     font-size: 1.2rem;
 }
 
-#operations .button {
+.half-width {
+    width: 50%;
+}
+.full-width {
+    width: 100%;
+}
+
+.button {
     margin: 0;
     border: 0;
     padding: 1em;
-    width: 200px;
     background-color: #dfdfdf;
 }
-#operations .button:hover {
+.button:hover {
     color: #ffffff;
     background-color: #0996f8;
 }

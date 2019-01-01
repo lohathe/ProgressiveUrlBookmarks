@@ -123,6 +123,14 @@ function unmarkCurrentPage() {
         });
 }
 
+function showOptionsPage() {
+    return browser.runtime.openOptionsPage()
+        .then((ignore) => {
+            window.close();
+        });
+}
+
 document.getElementById("save").addEventListener("click", markCurrentPage);
 document.getElementById("delete").addEventListener("click", unmarkCurrentPage);
+document.getElementById("open-option-page").addEventListener("click", showOptionsPage);
 updateCurrent();

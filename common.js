@@ -93,11 +93,26 @@ function getExtensionRules() {
     return getRules();
 }
 
-function getAllBookmarks() {
+function getAllBookmarks(sorting="date-descending") {
     return getExtensionBookmarksFolder()
         .then((bookmarks_folder) => {
             return browser.bookmarks.getChildren(id=bookmarks_folder.id);
         })
+        .then((bookmarks) => {
+            let sort_func = null;
+            switch(sorting) {
+                case "date-descending":
+                    sort_func = function(a, b) {return b.dateAdded-a.dateAdded};
+                    break;
+                case "date-ascending":
+                    sort_func = function(a, b) {return a.dateAdded-b.dateAdded};
+                    break;
+            }
+            if (sort_func) {
+                bookmarks.sort(sort_func);
+            }
+            return bookmarks;
+        });
 }
 
 function extractDataWithRuleFromURL(rule, url) {

@@ -17,15 +17,27 @@ function showOperationPanel(visible) {
 function listTracked() {
     getAllBookmarks("date-descending")
         .then((bookmarks) => {
-            return Promise.all(bookmarks.map((bookmark) => simplifyURL(bookmark.url)));
+            return Promise.all(
+                [
+                    Promise.all(bookmarks.map((bookmark) => simplifyURL(bookmark.url))),
+                    bookmarks.map((bookmark) => bookmark.url)
+                ]);
         })
-        .then((simplified_urls) => {
+        .then((res) => {
+            let simplified_urls = res[0];
+            let original_urls = res[1];
             let suggestions = document.getElementById("suggestions");
-            for (let simplified_url of simplified_urls) {
+            for (let i=0; i<simplified_urls.length; i++) {
+                let simplified_url = simplified_urls[i];
+                let original_url = original_urls[i];
                 let li = document.createElement("li");
                 let text = document.createTextNode(simplified_url);
                 li.appendChild(text);
                 suggestions.appendChild(li);
+                li.addEventListener("click", function() {
+                    browser.tabs.update({url: original_url})
+                        .then((ignore) => {window.close();});
+                });
             }
         });
 }

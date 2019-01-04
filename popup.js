@@ -14,20 +14,25 @@ function showOperationPanel(visible) {
     }
 }
 
-function listTracked() {
+function listTracked(show_all=false) {
     getAllBookmarks("date-descending")
         .then((bookmarks) => {
             return Promise.all(
                 [
                     Promise.all(bookmarks.map((bookmark) => simplifyURL(bookmark.url))),
-                    bookmarks.map((bookmark) => bookmark.url)
+                    bookmarks.map((bookmark) => bookmark.url),
+                    getSuggestionsListLength()
                 ]);
         })
         .then((res) => {
             let simplified_urls = res[0];
             let original_urls = res[1];
+            let max_urls_to_show = simplified_urls.length;
+            if (!show_all) {
+                max_urls_to_show = Math.min(res[2], max_urls_to_show);
+            }
             let suggestions = document.getElementById("suggestions");
-            for (let i=0; i<simplified_urls.length; i++) {
+            for (let i=0; i<max_urls_to_show; i++) {
                 let simplified_url = simplified_urls[i];
                 let original_url = original_urls[i];
                 let li = document.createElement("li");
@@ -93,7 +98,7 @@ function updateCurrent() {
     getActiveTab().then((tabs) => {
         var url = tabs[0].url;
         updateSummary(url);
-        listTracked();
+        listTracked(show_all=false);
     });
 }
 

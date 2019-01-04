@@ -9,11 +9,9 @@ function saveBookmarksFolder(e) {
 }
 
 function updateBookmarksFolder(new_folder) {
-    return browser.storage.sync.set({
-        bookmarks_folder: new_folder,
-    })
-    .then(restoreOptions)
-    .then(clearAllInputs)
+    return setBookmarksFolderName(new_folder)
+        .then(restoreOptions)
+        .then(clearAllInputs);
 }
 
 function restoreBookmarksFolder(folder_name) {

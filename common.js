@@ -31,6 +31,12 @@ function getBookmarksFolderName() {
         });
 }
 
+function setBookmarksFolderName(folder_name) {
+    return browser.storage.sync.set({
+        bookmarks_folder: folder_name,
+    });
+}
+
 /*
  * Get the browser.bookmarks.BookmarkTreeNode pointing to the extension folder.
  * It creates the folder if it doesn't already exist.

@@ -1,5 +1,6 @@
 function l(s) {console.log(s);}
 
+const DEFAULT_SUGGESTIONS_LIST_LENGTH = 5;
 const DEFAULT_BOOKMARKS_FOLDER = "PUB_playground";
 
 function getFolderNode(folder_name, create_if_missing=false) {
@@ -47,6 +48,27 @@ function getExtensionBookmarksFolder() {
         .then((folder_name) => {
             return getFolderNode(folder_name, create_if_missing=true);
         })
+}
+
+function getSuggestionsListLength() {
+    return browser.storage.sync.get("suggestions_list_length")
+        .then((res) => {
+            let suggestions_list_length = DEFAULT_SUGGESTIONS_LIST_LENGTH;
+            if (res && res.suggestions_list_length) {
+                suggestions_list_length = res.suggestions_list_length;
+            }
+            return suggestions_list_length;
+        });
+}
+
+function setSuggestionsListLength(new_value) {
+    let parsed_value = parseInt(new_value);
+    if (isNaN(parsed_value)) {
+        throw Error("bad type for 'suggestions_list_length'");
+    }
+    return browser.storage.sync.set({
+        suggestions_list_length: parsed_value,
+    });
 }
 
 function getRules() {

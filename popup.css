@@ -90,6 +90,9 @@ ul, li {
 #suggestions {
     margin-top: .5em;
     margin-bottom: .5em;
+    padding-right: 20px;
+    max-height: 200px;
+    overflow: auto;
 }
 
 #suggestions li {

@@ -32,6 +32,7 @@ function listTracked(show_all=false) {
                 max_urls_to_show = Math.min(res[2], max_urls_to_show);
             }
             let suggestions = document.getElementById("suggestions");
+            suggestions.innerHTML = "";
             for (let i=0; i<max_urls_to_show; i++) {
                 let simplified_url = simplified_urls[i];
                 let original_url = original_urls[i];
@@ -140,6 +141,17 @@ function unmarkCurrentPage() {
         });
 }
 
+function toggleSuggestionsListLength() {
+    let button = document.getElementById("toggle-list-length");
+    if (button.textContent == "Show all") {
+        button.textContent = "Show less";
+        return listTracked(show_all=true);
+    } else {
+        button.textContent = "Show all";
+        return listTracked(show_all=false);
+    }
+}
+
 function showOptionsPage() {
     return browser.runtime.openOptionsPage()
         .then((ignore) => {
@@ -150,4 +162,5 @@ function showOptionsPage() {
 document.getElementById("save").addEventListener("click", markCurrentPage);
 document.getElementById("delete").addEventListener("click", unmarkCurrentPage);
 document.getElementById("open-option-page").addEventListener("click", showOptionsPage);
+document.getElementById("toggle-list-length").addEventListener("click", toggleSuggestionsListLength);
 updateCurrent();

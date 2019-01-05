@@ -241,6 +241,25 @@ function extractDataFromURL(url) {
         });
 }
 
+function composeURLFromDataWithRule(data, rule) {
+    let title = data.title.replace(/ /g, "-");
+    return rule
+        .replace("<title>", title)
+        .replace("<episode>", data.episode);
+}
+
+function composeURLFromData(data, rule_id) {
+    return getRules()
+        .then((rules) => {
+            for (let rule of rules) {
+                if (rule.id == rule_id) {
+                    return composeURLFromDataWithRule(data, rule.rule);
+                }
+            }
+            throw Error("unknown rule ID");
+        });
+}
+
 function formatData(data) {
     if (data.title == null) {
         return "unsupported URL";

@@ -37,6 +37,11 @@ body {
     color: blue;
     float: right;
     font-weight: normal;
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
 }
 
 .current-setting dt {

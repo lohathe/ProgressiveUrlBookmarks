@@ -141,6 +141,51 @@ function unmarkCurrentPage() {
         });
 }
 
+function openAs() {
+    let source = e.source;
+    let rule_id = source.getAttribute("data-rule-id");
+}
+
+function toggleOpenAsList() {
+    let button = document.getElementById("open-as");
+    let div_rule = document.getElementById("open-as-div");
+    let div_suggestions = document.getElementById("suggestions-list");
+    button.classList.toggle("toggled");
+    div_rule.classList.toggle("hidden");
+    div_suggestions.classList.toggle("hidden");
+    let list = document.getElementById("open-as-list");
+    list.innerHTML = "";
+    return getExtensionRules()
+        .then((rules) => {
+            for (let rule of rules) {
+                let li = document.createElement("li");
+                let text = document.createTextNode(rule.name);
+                li.setAttribute("data-rule-id", rule.id);
+                li.appendChild(text);
+                li.addEventListener("click", function() {
+                    return getActiveTab()
+                        .then((tabs) => {
+                            let current_tab = tabs[0];
+                            return extractDataFromURL(current_tab.url);
+                        })
+                        .then((url_data) => {
+                            return composeURLFromData(url_data, rule.id);
+                        })
+                        .then((new_url) => {
+                            return browser.tabs.update({url: new_url});
+                        })
+                        .then((ignore) => {
+                            return window.close();
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                });
+                list.appendChild(li);
+            }
+        });
+}
+
 function toggleSuggestionsListLength() {
     let button = document.getElementById("toggle-list-length");
     if (button.textContent == "Show all") {
@@ -161,6 +206,7 @@ function showOptionsPage() {
 
 document.getElementById("save").addEventListener("click", markCurrentPage);
 document.getElementById("delete").addEventListener("click", unmarkCurrentPage);
+document.getElementById("open-as").addEventListener("click", toggleOpenAsList);
 document.getElementById("open-option-page").addEventListener("click", showOptionsPage);
 document.getElementById("toggle-list-length").addEventListener("click", toggleSuggestionsListLength);
 updateCurrent();

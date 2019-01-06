@@ -27,10 +27,6 @@
         "browser_style": true
     },
 
-    "background": {
-        "scripts": ["background.js"]
-    },
-    
     "applications": {
         "gecko": {
             "id": "lohathe@github.com"

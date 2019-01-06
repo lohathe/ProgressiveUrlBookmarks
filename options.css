@@ -8,8 +8,8 @@ body {
     padding-bottom: .3em;
     padding-left: 3em;
     padding-right: 2em;
-    margin-top: .875em;
-    margin-bottom: .875em;
+    margin-top: .25em;
+    margin-bottom: .25em;
     border-left: 10px solid #8080ff;
     width: 100%;
 }
@@ -20,9 +20,21 @@ body {
     padding-bottom: .125em;
     padding-left: 1em;
     padding-right: 1em;
-    margin-top: .875em;
-    margin-bottom: .875em;
+    margin-top: .25em;
+    margin-bottom: .25em;
     border-left: 10px solid #ffcc00;
+    width: 100%;
+}
+
+.error {
+    background-color: #ff9999;
+    padding-top: .125em;
+    padding-bottom: .125em;
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-top: .25em;
+    margin-bottom: .25em;
+    border-left: 10px solid #990000;
     width: 100%;
 }
 
@@ -55,4 +67,8 @@ button {
 
 .current-setting p strong {
     color: #404040;
+}
+
+.hidden {
+    display: none;
 }

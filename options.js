@@ -5,11 +5,30 @@ function saveBookmarksFolder(e) {
     if (!input_value) {
         throw new Error("invalid input for PUB_bookmarks_folder");
     }
-    return updateBookmarksFolder(input_value);
+    return updateBookmarksFolder(input_value)
+        .then((ignore) => {
+            let error_div = document.querySelector("#error-bookmarks-folder");
+            if (!error_div.classList.contains("hidden")) {
+                error_div.classList.add("hidden");
+            }
+        })
+        .catch((err) => {
+            let error_div = document.querySelector("#error-bookmarks-folder");
+            let error_msg = document.querySelector("#error-bookmarks-folder-message");
+            error_div.classList.remove("hidden");
+            error_msg.innerHTML = err;
+        });
 }
 
 function updateBookmarksFolder(new_folder) {
-    return setBookmarksFolderName(new_folder)
+    return browser.bookmarks.search({title: new_folder})
+        .then((bookmarks) => {
+            if (bookmarks.length > 1) {
+                throw Error("Already duplicated folder");
+            }
+            return new_folder;
+        })
+        .then(setBookmarksFolderName)
         .then(restoreOptions)
         .then(clearAllInputs);
 }

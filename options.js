@@ -105,19 +105,47 @@ function clearRulesInput() {
 }
 
 
+// SUGGESTIONS
+function saveSuggestionsListLength(e) {
+    e.preventDefault();
+    let input_value = document.querySelector("#PUB_suggestions_list_length").value;
+    let new_value = parseInt(input_value);
+    if (isNaN(new_value)) {
+        throw Error("invalid input for PUB_suggestions_list_length");
+    }
+    return setSuggestionsListLength(new_value)
+        .then(restoreOptions)
+        .then(clearAllInputs);
+}
+
+function restoreSuggestions() {
+    return getSuggestionsListLength()
+        .then((suggestions_list_length) => {
+            document.querySelector("#current-suggestions").innerText = suggestions_list_length;
+        });
+}
+
+function clearSuggestions() {
+    document.querySelector("#PUB_suggestions_list_length").value = null;
+}
+
+
 // WHOLE PAGE MANAGEMENT
 function restoreOptions() {
     return getBookmarksFolderName()
         .then(restoreBookmarksFolder)
-        .then(restoreRules);
+        .then(restoreRules)
+        .then(restoreSuggestions);
 }
 
 function clearAllInputs() {
     clearBookmarksFolderInput();
     clearRulesInput();
+    clearSuggestions();
 }
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.querySelector("#PUB_bookmarks_folder_selector").addEventListener("submit", saveBookmarksFolder);
 document.querySelector("#PUB_import_folder_selector").addEventListener("submit", importFolder);
 document.querySelector("#PUB_rules_selector").addEventListener("submit", addRule);
+document.querySelector("#PUB_suggestions_selector").addEventListener("submit", saveSuggestionsListLength);

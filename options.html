@@ -18,27 +18,28 @@
         </div>
         <div class="current-setting">
             <p>You are currently using folder: <strong id="the-folder"></strong></p>
+            <div id="error-bookmarks-folder" class="hidden error">
+                <p>The selected folder is not a valid folder</p>
+                <p id="error-bookmarks-folder-message"></p>
+            </div>
+
+            <form id="PUB_bookmarks_folder_selector">
+                <fieldset>
+                    <legend>Bookmark folder</legend>
+                    <label for="PUB_bookmarks_folder">Name:</label>
+                    <input type="text" name="PUB_bookmarks_folder" id="PUB_bookmarks_folder" placeholder="PUB_playground" required>
+                    <button type="submit">Save</button>
+                </fieldset>
+            </form>
+            <form id="PUB_import_folder_selector">
+                <fieldset>
+                    <legend>Import from folder</legend>
+                    <label for="PUB_import_folder">Name:</label>
+                    <input type="text" name="PUB_import_folder" id="PUB_import_folder" required>
+                    <button type="submit">Import</button>
+                </fieldset>
+            </form>
         </div>
-        <div id="error-bookmarks-folder" class="hidden error">
-            <p>The selected folder is not a valid folder</p>
-            <p id="error-bookmarks-folder-message"></p>
-        </div>
-        <form id="PUB_bookmarks_folder_selector">
-            <fieldset>
-                <legend>Bookmark folder</legend>
-                <label for="PUB_bookmarks_folder">Name:</label>
-                <input type="text" name="PUB_bookmarks_folder" id="PUB_bookmarks_folder" placeholder="PUB_playground" required>
-                <button type="submit">Save</button>
-            </fieldset>
-        </form>
-        <form id="PUB_import_folder_selector">
-            <fieldset>
-                <legend>Import from folder</legend>
-                <label for="PUB_import_folder">Name:</label>
-                <input type="text" name="PUB_import_folder" id="PUB_import_folder" required>
-                <button type="submit">Import</button>
-            </fieldset>
-        </form>
 
         <h2>PUB matching rules</h2>
         <div class="info">
@@ -57,17 +58,17 @@
             <p>You are currently using these rules:</p>
             <ul id="current-rules">
             </ul>
+            <form id="PUB_rules_selector">
+                <fieldset>
+                    <legend>Add new rule</legend>
+                    <label for="PUB_rules_selector_name">Name:</label>
+                    <input type="text" name="PUB_rules_selector_name" id="PUB_rules_selector_name" placeholder="MyST" required>
+                    <label for="PUB_rules_selector_rule">Rule:</label>
+                    <input type="text" name="PUB_rules_selector_rule" id="PUB_rules_selector_rule" placeholder="https://www.mysite.com/<title>/episode-<episode>" required>
+                    <button type="submit">Add</button>
+                </fieldset>
+            </form>
         </div>
-        <form id="PUB_rules_selector">
-            <fieldset>
-                <legend>Add new rule</legend>
-                <label for="PUB_rules_selector_name">Name:</label>
-                <input type="text" name="PUB_rules_selector_name" id="PUB_rules_selector_name" placeholder="MyST" required>
-                <label for="PUB_rules_selector_rule">Rule:</label>
-                <input type="text" name="PUB_rules_selector_rule" id="PUB_rules_selector_rule" placeholder="https://www.mysite.com/<title>/episode-<episode>" required>
-                <button type="submit">Add</button>
-            </fieldset>
-        </form>
 
         <h2>PUB suggestions</h2>
         <div class="info">
@@ -76,15 +77,15 @@
         </div>
         <div class="current-setting">
             <p>Current number of suggestions shown: <strong id="current-suggestions"></strong></p>
+            <form id="PUB_suggestions_selector">
+                <fieldset>
+                    <legend>Change suggestions list length</legend>
+                    <label for="PUB_suggestions_list_length">Length:</label>
+                    <input type="number" name="PUB_suggestions_list_length" id="PUB_suggestions_list_length" placeholder=5 required>
+                    <button type="submit">Save</button>
+                </fieldset>
+            </form>
         </div>
-        <form id="PUB_suggestions_selector">
-            <fieldset>
-                <legend>Change suggestions list length</legend>
-                <label for="PUB_suggestions_list_length">Length:</label>
-                <input type="number" name="PUB_suggestions_list_length" id="PUB_suggestions_list_length" placeholder=5 required>
-                <button type="submit">Save</button>
-            </fieldset>
-        </form>
 
         <script src="common.js"></script>
         <script src="options.js"></script>

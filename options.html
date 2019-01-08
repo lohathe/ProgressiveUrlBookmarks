@@ -26,16 +26,16 @@
         <form id="PUB_bookmarks_folder_selector">
             <fieldset>
                 <legend>Bookmark folder</legend>
-                <label>Name:</label>
-                <input type="text" id="PUB_bookmarks_folder" placeholder="PUB_playground" required>
+                <label for="PUB_bookmarks_folder">Name:</label>
+                <input type="text" name="PUB_bookmarks_folder" id="PUB_bookmarks_folder" placeholder="PUB_playground" required>
                 <button type="submit">Save</button>
             </fieldset>
         </form>
         <form id="PUB_import_folder_selector">
             <fieldset>
                 <legend>Import from folder</legend>
-                <label>Name:</label>
-                <input type="text" id="PUB_import_folder" required>
+                <label for="PUB_import_folder">Name:</label>
+                <input type="text" name="PUB_import_folder" id="PUB_import_folder" required>
                 <button type="submit">Import</button>
             </fieldset>
         </form>
@@ -61,10 +61,10 @@
         <form id="PUB_rules_selector">
             <fieldset>
                 <legend>Add new rule</legend>
-                <label>Name:</label>
-                <input type="text" id="PUB_rules_selector_name" placeholder="MyST" required>
-                <label>Rule:</label>
-                <input type="text" id="PUB_rules_selector_rule" placeholder="https://www.mysite.com/<title>/episode-<episode>" required>
+                <label for="PUB_rules_selector_name">Name:</label>
+                <input type="text" name="PUB_rules_selector_name" id="PUB_rules_selector_name" placeholder="MyST" required>
+                <label for="PUB_rules_selector_rule">Rule:</label>
+                <input type="text" name="PUB_rules_selector_rule" id="PUB_rules_selector_rule" placeholder="https://www.mysite.com/<title>/episode-<episode>" required>
                 <button type="submit">Add</button>
             </fieldset>
         </form>
@@ -80,8 +80,8 @@
         <form id="PUB_suggestions_selector">
             <fieldset>
                 <legend>Change suggestions list length</legend>
-                <label>Length:</label>
-                <input type="number" id="PUB_suggestions_list_length" placeholder=5 required>
+                <label for="PUB_suggestions_list_length">Length:</label>
+                <input type="number" name="PUB_suggestions_list_length" id="PUB_suggestions_list_length" placeholder=5 required>
                 <button type="submit">Save</button>
             </fieldset>
         </form>

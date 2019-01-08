@@ -16,7 +16,7 @@ function saveBookmarksFolder(e) {
             let error_div = document.querySelector("#error-bookmarks-folder");
             let error_msg = document.querySelector("#error-bookmarks-folder-message");
             error_div.classList.remove("hidden");
-            error_msg.innerHTML = err;
+            error_msg.textContent = err;
         });
 }
 

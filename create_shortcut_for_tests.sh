@@ -24,12 +24,12 @@ PROFILE_FOLDER=$1
 
 echo """
 #!/bin/bash
-web-ext run --firefox-profile=$PROFILE_FOLDER --keep-profile-changes
+web-ext run --source-dir=src/ --firefox-profile=$PROFILE_FOLDER --keep-profile-changes
 """ >> run_extension.sh
 chmod +x run_extension.sh
 
 echo """
 #!/bin/bash
-web-ext run --firefox-profile=$PROFILE_FOLDER
+web-ext run --source-dir=src/ --firefox-profile=$PROFILE_FOLDER
 """ >> run_extension_no_persistent.sh
 chmod +x run_extension_no_persistent.sh

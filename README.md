@@ -10,18 +10,22 @@ The main goal is to be able to bookmark a progressive url and automatically dele
 > By bookmarking this url with this extension, in your bookmark there will be only the bookmark for episode 6 because the extension deleted the bookmark of episode 4 since it is no more useful. And this is done by only adding a new bookmark: there is no need to manually search and delete the previous bookmark!
 
 ## Features
-* will create a dedicated bookmark folder and it will manage only bookmarks saved in that folder. All previous bookmarks will not be touched: no need to backup
-* import into the dedicated bookmark folder the bookmarks saved in other folders at any given time. Every time bookmarks are added they will be filtered and only the last occurrence of the progressive url will be kept: the list of the progessive bookmark is always tidy and up-to-date
-* specify rules teaching the extension how to understand which urls are to be managed and how to extract data from them (i.e., extract title and progression number). As a side effect if you are using several sites that offer the same progressive content, there will be only one bookmark per content independently from which site has been used to bookmark the content
-* each rule can have a mnemonic name selected by the user. Otherwie the name will be automatically generated from the domain of the url
-* list the last bookmarked contents as links so that they can be easily reached without the need to navigate inside the dedicate bookmark folder. List also all the content currently traked when explicitly requested
-* try to open the current content with any other site listed with a rule (as long as it does not contain any wildcard). This is a best effort since the same content in different sites is not guaranteed to exist
 
-### Future feature
-* account also for an optional "season" number
+  * **manage its own bookmarks**: no need to backup previous bookmarks since they will never be touched
+  * **import bookmarks at any time**: duplicated PUB bookmarks will be filtered at import time, *the list of the progessive bookmark is always tidy and up-to-date*
+  * **custom rules**: teach PUB how to understand the urls, be smart and PUB will do all the rest
+  * **one entry for each content**: if you are using several sites that offer the same progressive content, there will be only one bookmark per content independently from which site has been used to bookmark the content
+  * **list of latest bookmarked content**: links to quickly open your bookmarked content
+  * **open one content with another rule**: best effort to quickly switch among several sites, not guaranteed to work tough :)
+  * **everything is local**: [all data are yours](#Security)
+
 
 ## User interface
+
 ### Popup
+
+![example of PUB popup](imgs/PUB_popup.png)
+
 * clearly show the content name, progression number and the name of the matching rule of the current url (if it matches the user-specified rules)
 * show if the current url is already bookmarked or not: use a feather icon as a background image
 * show if the current url refers to content that is already tracked:
@@ -35,6 +39,9 @@ The main goal is to be able to bookmark a progressive url and automatically dele
 * submenu "open with rule..." listing the links of the url created by using the rules specified in the configuration of the extension
 
 ### Configuration
+
+![example of PUB options page](imgs/PUB_options.png)
+
 * specify the name of the dedicated bookmark folders where the extension keeps its bookmark. The default folder is "Progressive Url Bookmarks"
 * specify the lenght of the "small list of the last tracked content" in the popup. The default is 5
 * add and remove rules to match & extract data from urls. Sample url: `*//my.streaming.site/series/<title>&lang=en/*/episode<episode>`. The matching logic interprets a rule with the following meaning:

@@ -21,7 +21,11 @@ The main goal is to be able to bookmark a progressive url and automatically dele
 
 
 ## User interface
+
 ### Popup
+
+![example of PUB popup](imgs/PUB_popup.png)
+
 * clearly show the content name, progression number and the name of the matching rule of the current url (if it matches the user-specified rules)
 * show if the current url is already bookmarked or not: use a feather icon as a background image
 * show if the current url refers to content that is already tracked:
@@ -35,6 +39,9 @@ The main goal is to be able to bookmark a progressive url and automatically dele
 * submenu "open with rule..." listing the links of the url created by using the rules specified in the configuration of the extension
 
 ### Configuration
+
+![example of PUB options page](imgs/PUB_options.png)
+
 * specify the name of the dedicated bookmark folders where the extension keeps its bookmark. The default folder is "Progressive Url Bookmarks"
 * specify the lenght of the "small list of the last tracked content" in the popup. The default is 5
 * add and remove rules to match & extract data from urls. Sample url: `*//my.streaming.site/series/<title>&lang=en/*/episode<episode>`. The matching logic interprets a rule with the following meaning:

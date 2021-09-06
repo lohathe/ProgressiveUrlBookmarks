@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="../src/common.js"></script>
+    <script type="text/javascript" src="common.test.js"></script>
+    <meta charset="UTF-8">
+    <style type="text/css">
+.success {
+    margin-bottom:  0.5em;
+    border-left: 10px solid #3A0;
+    background-color: #AFA;
+    padding: 1em;
+}
+.fail {
+    margin-bottom:  0.5em;
+    border-left: 10px solid #A30;
+    background-color: #FAA;
+    padding: 1em;
+}
+    </style>
+</head>
+<body>
+    <div id="results">
+    </div>
+</body>
+<script type="text/javascript">
+function ft(fun) {
+    let data = fun();
+
+    let details = document.createElement("pre");
+    let details_text = document.createTextNode(data.details);
+    details.appendChild(details_text);
+
+    let description = document.createElement("p");
+    let description_text = document.createTextNode(data.description);
+    description.appendChild(description_text);
+
+    let head = document.createElement("summary");
+    let head_text = document.createTextNode(fun.name);
+    head.appendChild(head_text);
+
+    let el = document.createElement("details");
+    el.className = data.outcome ? "success" : "fail";
+    el.appendChild(head);
+    el.appendChild(description);
+    el.appendChild(details);
+
+    let div = document.getElementById("results");
+    div.appendChild(el);
+};
+
+ft(test_fake_success);
+ft(test_fake_fail);
+ft(test_extract_data_with_rule_from_url_1);
+ft(test_extract_data_with_rule_from_url_2);
+ft(test_extract_data_with_rule_from_url_3);
+ft(test_extract_data_with_rule_from_url_4);
+ft(test_extract_data_with_rule_from_url_5);
+ft(test_extract_data_with_rule_from_url_6);
+ft(test_extract_data_with_rule_from_url_7);
+ft(test_extract_data_with_rule_from_url_8);
+ft(test_extract_data_with_rule_from_url_9);
+ft(test_extract_data_with_rule_from_url_10);
+ft(test_extract_data_with_rule_from_url_11);
+ft(test_extract_data_with_rule_from_url_12);
+ft(test_extract_data_with_rule_from_url_13);
+</script>
+</html>

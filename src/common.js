@@ -187,7 +187,7 @@ function extractDataWithRuleFromURL(rule, url) {
                 episode = reg_exp.exec(url_piece)[1];
             } else {
                 var match1 = reg_exp.exec(url_piece)[1];
-                var match2 = reg_exp.exec(url_piece)[1];
+                var match2 = reg_exp.exec(url_piece)[2];
                 if (matching_title < matching_episode) {
                     title = match1;
                     episode = match2;

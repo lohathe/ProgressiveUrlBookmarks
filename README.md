@@ -64,3 +64,4 @@ The main goal is to be able to bookmark a progressive url and automatically dele
 2. install `web-ext` (url ...)
 3. to create/add bookmarks: `web-ext run --firefox-profile path/to/profile --keep-profile-changes`
 4. to mess with the extension: `web-ext run --firefox-profile path/to/profile` so that you can add/remove bookmarks with the extension without actually removing anything since at the next restart every change will be discarded (aka you won't need to add again a bunch of bookmarks in order to test the extension)
+5. there are some tests in the `test` folder. Since I'm lazy and I didn't want to import a js framework, the tests are run by opening the `testpage.html`

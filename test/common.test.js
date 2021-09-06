@@ -135,7 +135,7 @@ function test_extract_data_with_rule_from_url_12() {
         "123");
 }
 
-function test_extract_data_with_rule_from_url_12() {
+function test_extract_data_with_rule_from_url_13() {
     return test_extract_data_with_rule_from_url_generic(
         "Title and episode must be separated by at least a character otherwise they are mismatched.",
         "https://my.stream.site/watch/<title><episode>",

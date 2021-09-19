@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Progressive Url Bookmarks",
-    "version": "0.1",
+    "version": "0.2",
     "description": "Keep only one bookmark for each content site: keep bookmarks updated to the last episode/chapter",
     
     "icons": {
